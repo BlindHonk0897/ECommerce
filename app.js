@@ -2,7 +2,8 @@ var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var assert = require('assert');
-
+var flash = require('connect-flash');
+var session = require('express-session');
 var bodyParser = require('body-parser');
 
 var MongoClient = require('mongodb').MongoClient;
@@ -13,15 +14,32 @@ app.use(express.static(__dirname+'/public'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 
+app.use(session({
+    secret:'this my sample session',
+    resave:false,
+    saveUninitialized:true
+}));
+app.use(flash());
 //routes = require(__dirname+'/public/router/routes.js');
 
 // dbManager = require(__dirname+'/public/scripts/dbManager.js');
 
 //routes(app);
 
+/// --------Admin Start ---------////
 app.get('/',(req,res)=>{
-    res.render(__dirname+   '/public/views/login.ejs');
+    res.render(__dirname+'/public/views/login.ejs');
 });
+app.get('/adminItems',(req,res)=>{
+    res.render(__dirname+'/public/views/adminItems.ejs');
+});
+app.get('/adminSeller',(req,res)=>{
+    res.render(__dirname+'/public/views/adminSeller.ejs');
+});
+app.get('/adminDashboard',(req,res)=>{
+    res.render(__dirname+'/public/views/adminDashboard.ejs');
+});
+/// --------Admin End ---------////
 
 app.post('/login',(req,res)=>{
     console.log(req.body.Username);
@@ -39,6 +57,7 @@ app.post('/login',(req,res)=>{
             if(doc.Type === 'Admin'){
               res.render(__dirname+"/public/views/adminDashboard.ejs")
             }else{
+                req.flash('error',"Your account not found!");
                 res.redirect("/"); 
             }
         }
