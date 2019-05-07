@@ -81,6 +81,18 @@
             $butApproved = $('.btn-success');
             $butApproved.click(function(){
                alert(this.id);
+               var updated ={
+                   id:this.id,
+                   status:'Approved'
+               }
+               $.ajax({
+                   method:'POST',
+                   url:'/update',
+                   data:updated,
+                   success:function(){
+                       console.log('success');
+                   }
+               })
             });
             $butDeny = $('.btn-danger');
             $butDeny.click(function(){
