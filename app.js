@@ -102,15 +102,29 @@ app.get('/clientItems',function(req,res){
         res.render(__dirname+'/public/views/clientBuyItem.ejs',{'data':doc});
      });
 })
-
 app.get('/clientValidate',function(req,res){
+    console.log(req.body)
     res.render(__dirname+'/public/views/clientValidate.ejs')
+})
+app.get('/clientBuyItem',function(req,res){
+    client.db("ECommerce").collection('Items').find({}).toArray(function(err,doc){
+        console.log(doc);
+        res.render(__dirname+'/public/views/clientBuyItem.ejs',{'data':doc});
+    });
 })
 app.post('/validateItem',function(req,res){
     //console.log(req.body.id);
     var obj = {};
-	console.log('body: ' + JSON.stringify(req.body));
-    res.redirect(__dirname+'/public/views/clientValidate.ejs')
+    //console.log('body: ' + JSON.stringify(req.body));
+    console.log(req.body.id);
+    var ObjectId = require('mongodb').ObjectID;
+    client.db("ECommerce").collection('Items').findOne({'_id':ObjectId(req.body.id)},(err,doc)=>{
+        console.log("kikikik"+doc.Description);
+       // res.render(__dirname+'/public/views/clientBuyItem.ejs',{'data':doc});
+       res.send(doc);
+    });
+    
+    //res.redirect(__dirname+'/public/views/clientValidate.ejs')
 })
 
 ////// -----Client End ----//////

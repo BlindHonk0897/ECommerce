@@ -38,49 +38,14 @@
                     <th></th>
                     <th></th>
                 </thead>
-                <tr>
-                    <td>1</td>
-                    <td>Kaldero</td>
-                    <td>P150.00</td>
-                    <td>winklelittlestar</td>
-                    <td><button class="btn btn-success btn-sm" style="width: 50%; margin-left: 75%;">Purchase</button></td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Luwag</td>
-                    <td>P50.75</td>
-                    <td>philbautista</td>
-                    <td><button class="btn btn-success btn-sm" style="width: 50%; margin-left: 75%;">Purchase</button></td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Haplas</td>
-                    <td>P38.00</td>
-                    <td>gdiaries</td>
-                    <td><button class="btn btn-success btn-sm" style="width: 50%; margin-left: 75%;">Purchase</button></td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>Lumay</td>
-                    <td>P450.00</td>
-                    <td>dandangwapo</td>
-                    <td><button class="btn btn-success btn-sm" style="width: 50%; margin-left: 75%;">Purchase</button></td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td>Butong</td>
-                    <td>P20.00</td>
-                    <td>philbautista</td>
-                    <td><button class="btn btn-success btn-sm" style="width: 50%; margin-left: 75%;">Purchase</button></td>
-                </tr>
                 <% var items = data, counter = 1; %>
                 <% items.forEach(function(element){%>
                     <tr>
                         <td><%= counter %></td>
-                        <td><%= element.Item %></td>
+                        <td><%= element.Description %></td>
                         <td><%= element.Price %></td>
                         <td><%= element.Seller %></td>
-                        <td><button class="btn btn-success btn-sm" style="width: 50%; margin-left: 75%;" id=<%= `${element._id}`%>>Purchase</button></td>
+                        <td><a><button class="btn btn-success btn-sm" style="width: 50%; margin-left: 75%;" id=<%= `${element._id}`%>>Purchase</button></a></td>
                     </tr>
                     <% counter++ %>
                 <% });%>
@@ -100,16 +65,24 @@
           }
           $.ajax({
               method:'POST',
-              url:'http://localhost:3000/validateItem',
-              data:JSON.stringify(d),
-              contentType: 'application/json',
-              success:function(d){
+              url:'/validateItem',
+              data:d,
+              success:function(dat){
                 console.log('success');
-                console.log(JSON.stringify(d));
-                    if (d.redirect) {
-                     // data.redirect contains the string URL to redirect to
-                        window.location.href = d.redirect;
-                    }
+                alert(JSON.stringify(dat));
+                      
+                   // window.location.href = '/clientValidate';
+                            $.ajax({
+                                method:'POST',
+                                url:'/validateItem',
+                                data:dat,
+                                success:function(data){
+                                    console.log('success');
+                                    alert(JSON.stringify(data));
+                                    
+                                    window.location.href = '/clientValidate';
+                                }
+                           })
               }
           })
        });
