@@ -7,8 +7,8 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 
 var MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb://172.16.32.40:27017/";
-//const uri = "mongodb://172.16.8.29:27017/";
+//onst uri = "mongodb://172.16.32.40:27017/";
+const uri = "mongodb://172.16.8.29:27017/";
 let client = null;
 
 app.use(express.static(__dirname+'/public'));
@@ -57,7 +57,8 @@ app.post('/update',(req,res)=>{
     // client.db("ECommerce").collection('Users').insertOne({'Name':'Seller1 seller1','Username':'seller1','Password':'seller1','Type':'Seller','Status':'Pending'});
     var id = req.body.id;
     var status = req.body.status
-    client.db("ECommerce").collection('Users').updateOne({'__id':id},{$set:{'Status':status}});
+    var ObjectID = require('mongodb').ObjectID;
+    client.db("ECommerce").collection('Users').updateOne({'__id':ObjectID(id)},{$set:{'Status':status}});
     console.log(id);
     console.log(status);
  });
@@ -73,12 +74,22 @@ app.get('/sellerItems',function(req,res){
     res.render(__dirname+'/public/views/sellerItems.ejs');
 })
 
+app.get('/sellerAddItem',function(req,res){
+    res.render(__dirname+'/public/views/sellerAddItem.ejs');
+})
+
 app.get('/sellerRequest',function(req,res){
     res.render(__dirname+'/public/views/sellerRequest.ejs');
 })
 
 app.get('/sellerUpdateItems',function(req,res){
     res.render(__dirname+'/public/views/sellerUpdateItems.ejs');
+})
+
+app.post('/addItem',function(req,res){
+    console.log(req.body);
+    var item = {'Item':req.body.Item,'Price':req.body.Price,'Quantity':req.body.Quantity,'Seller':''}
+    res.render(__dirname+'/public/views/sellerItems.ejs');
 })
 
 //// -----Seller End ---- /////
@@ -125,7 +136,7 @@ app.post('/login',(req,res)=>{
                     res.render(__dirname+'/public/views/adminDashboard.ejs',{'data':doc});
                   });
             }else if(doc.Type === 'Seller' && doc.Status ==="Approved"){
-                res.render(__dirname+"/public/views/seller_Approve_Success.ejs"); 
+                res.render(__dirname+"/public/views/seller_Approve_Success.ejs",{'Seller':doc.Username}); 
                 //req.flash('error',"Your account not found!");
             }else if(doc.Type === 'Client'){
                client.db("ECommerce").collection('Items').find({}).toArray(function(err,doc){

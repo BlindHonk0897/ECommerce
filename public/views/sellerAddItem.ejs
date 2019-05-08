@@ -13,9 +13,9 @@
         <nav id="nav">
             <ul class="main">
                 <p style="font-size: 2em; color: #fff;">Seller</p>
-                <li><a href="#">Requests</a></li>
-                <li><a href="#" style="color: #b7ac7f;">Items</a></li>
-                <li><a href="#">Logout</a></li>
+                <li><a href="/sellerRequest">Requests</a></li>
+                <li><a href="/sellerItems" style="color: #b7ac7f;">Items</a></li>
+                <li><a href="/">Logout</a></li>
             </ul>
         </nav>
         <div class="overlay"></div>
@@ -26,19 +26,24 @@
             });
         </script>
         <div class="container" style="margin-top: 5%; width: 20%;">
-            <form>
+            <form method="POST" action="/addItem">
                 <h3>Add Item</h3><br>
                 <div class="form-group">
-                    <input class="form-control" placeholder="Item">
+                    <input class="form-control" placeholder="Item" name="Item" required>
                 </div>
                 <div class="form-group">
-                    <input class="form-control" placeholder="Price">
+                    <input class="form-control" placeholder="Price" name="Price" type="number" required
                 </div>
                 <div class="form-group">
-                    <input class="form-control" placeholder="Quantity on Hand">
+                    <input class="form-control" placeholder="Quantity on Hand" name="Quantity" type="number" required>
                 </div>
                 <button type="submit" class="btn btn-success btn-block">Submit</button>
             </form>
         </div>
+        <script>
+            $(document).ready(function(){
+                
+            })
+        </script>
    </body>
 </html>
