@@ -42,14 +42,12 @@ app.get('/adminItems',(req,res)=>{
 app.get('/adminSeller',(req,res)=>{
     //client.db("ECommerce").collection('Users').updateOne({'Name':'Seller seller'},{$set:{'Status':'Approved'}});
     client.db("ECommerce").collection('Users').find({'Type':'Seller','Status':'Approved'}).toArray(function(err,doc){
-       console.log(doc);
        res.render(__dirname+'/public/views/adminSeller.ejs',{'data':doc});
     });
 });
 app.get('/adminDashboard',(req,res)=>{
    // client.db("ECommerce").collection('Users').insertOne({'Name':'Seller1 seller1','Username':'seller1','Password':'seller1','Type':'Seller','Status':'Pending'});
    client.db("ECommerce").collection('Users').find({'Type':'Seller','Status':'Pending'}).toArray(function(err,doc){
-    console.log(doc);
     res.render(__dirname+'/public/views/adminDashboard.ejs',{'data':doc});
   });
 });
@@ -57,13 +55,26 @@ app.post('/update',(req,res)=>{
     // client.db("ECommerce").collection('Users').insertOne({'Name':'Seller1 seller1','Username':'seller1','Password':'seller1','Type':'Seller','Status':'Pending'});
     var id = req.body.id;
     var status = req.body.status
-    var ObjectID = require('mongodb').ObjectID;
-    client.db("ECommerce").collection('Users').updateOne({'__id':ObjectID(id)},{$set:{'Status':status}});
-    console.log(id);
-    console.log(status);
+    var ObjectId = require('mongodb').ObjectID;
+    client.db("ECommerce").collection('Users').updateOne({"_id":ObjectId(req.body.id)},{$set:{'Status':status}});
+    // console.log(id);
+    // console.log(status);
  });
- 
 
+ app.post('/block',(req,res)=>{
+    // client.db("ECommerce").collection('Users').insertOne({'Name':'Seller1 seller1','Username':'seller1','Password':'seller1','Type':'Seller','Status':'Pending'});
+    var id = req.body.id;
+    var status = req.body.status
+    var ObjectId = require('mongodb').ObjectID;
+    client.db("ECommerce").collection('Users').deleteOne({"_id":ObjectId(req.body.id)});
+    client.db("ECommerce").collection('Users').findOne({"_id":ObjectId(req.body.id)})(function(err,doc){
+        client.db("ECommerce").collection('Items').deleteAll({"Seller":doc.Username});
+        //res.render(__dirname+'/public/views/adminDashboard.ejs',{'data':doc});
+      });
+   // client.db("ECommerce").collection('Items').deleteAll({"Seller":ObjectId(req.body.id)});
+    // console.log(id);
+    // console.log(status);
+ });
 /// --------Admin End ---------////
 
 
@@ -71,6 +82,7 @@ app.post('/update',(req,res)=>{
 /// ----Seller start ---- //////
 
 app.get('/sellerItems',function(req,res){
+    
     res.render(__dirname+'/public/views/sellerItems.ejs');
 })
 
@@ -103,7 +115,7 @@ app.get('/clientItems',function(req,res){
      });
 })
 app.get('/clientValidate',function(req,res){
-    console.log(req.body)
+   // console.log("dadadadadadadad"+req.body)
     res.render(__dirname+'/public/views/clientValidate.ejs')
 })
 app.get('/clientBuyItem',function(req,res){
@@ -116,11 +128,19 @@ app.post('/validateItem',function(req,res){
     //console.log(req.body.id);
     var obj = {};
     //console.log('body: ' + JSON.stringify(req.body));
-    console.log(req.body.id);
+    console.log(req.body);
     var ObjectId = require('mongodb').ObjectID;
+    
+    // get kinxa///
     client.db("ECommerce").collection('Items').findOne({'_id':ObjectId(req.body.id)},(err,doc)=>{
-        console.log("kikikik"+doc.Description);
        // res.render(__dirname+'/public/views/clientBuyItem.ejs',{'data':doc});
+       console.log(doc);
+       var subTe = doc.Price*req.body.quantity;
+       console.log(subTe);
+       var dat = new Date();
+       var mao = dat.getMonth()+1 +"/"+dat.getDate()+"/"+dat.getFullYear();
+       console.log(mao);
+       client.db("ECommerce").collection('Purchases').insertOne({'Date':mao,'Client':req.body.client,'Item':doc.Description,'Qty':req.body.quantity,'Subtotal':doc.Price*req.body.quantity,'Seller':doc.Seller,'Status':'Pending'});
        res.send(doc);
     });
     
@@ -150,12 +170,16 @@ app.post('/login',(req,res)=>{
                     res.render(__dirname+'/public/views/adminDashboard.ejs',{'data':doc});
                   });
             }else if(doc.Type === 'Seller' && doc.Status ==="Approved"){
-                res.render(__dirname+"/public/views/seller_Approve_Success.ejs",{'Seller':doc.Username}); 
+                client.db("ECommerce").collection('Purchases').find({'Status':'Pending','Seller':doc.Username}).toArray(function(err,result){
+                    console.log(result);
+                    res.render(__dirname+"/public/views/sellerRequest.ejs",{'Seller':doc.Username,'Purchase':result});
+                   // res.render(__dirname+'/public/views/adminDashboard.ejs',{'data':doc});
+                  }); 
                 //req.flash('error',"Your account not found!");
             }else if(doc.Type === 'Client'){
-               client.db("ECommerce").collection('Items').find({}).toArray(function(err,doc){
+               client.db("ECommerce").collection('Items').find({}).toArray(function(err,result){
                 console.log(doc);
-                res.render(__dirname+'/public/views/clientBuyItem.ejs',{'data':doc});
+                 res.render(__dirname+'/public/views/clientBuyItem.ejs',{'data':result,"Client":doc.Username});
                 });
             }else{
                 res.redirect('/');

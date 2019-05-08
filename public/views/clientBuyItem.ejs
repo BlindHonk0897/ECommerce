@@ -12,7 +12,7 @@
         <div class="menu"> <span></span> </div>
         <nav id="nav">
             <ul class="main">
-                <p style="font-size: 2em; color: #fff;">Client</p>
+                <p id="Client" style="font-size: 2em; color: #fff;"><%= Client %></p>
                 <li><a href="/clientItems" style="color: #b7ac7f;">Items</a></li>
                 <li><a href="/">Logout</a></li>
             </ul>
@@ -56,11 +56,17 @@
    <script>
    $(document).ready(function(){
        $but = $('.btn-success');
+       $cl = $('#Client');
        $but.click(function(){
+            // alert($cl.text());
+          var qty =   prompt("Enter quantity");
+          
           var da = this.id;
-          alert(da);
+          //alert(da);
           var d = {
               id:da,
+              client:$cl.text(),
+              quantity:qty,
               message:"hi"
           }
           $.ajax({
@@ -68,21 +74,18 @@
               url:'/validateItem',
               data:d,
               success:function(dat){
-                console.log('success');
-                alert(JSON.stringify(dat));
-                      
-                   // window.location.href = '/clientValidate';
-                            $.ajax({
-                                method:'POST',
-                                url:'/validateItem',
-                                data:dat,
-                                success:function(data){
-                                    console.log('success');
-                                    alert(JSON.stringify(data));
-                                    
-                                    window.location.href = '/clientValidate';
-                                }
-                           })
+              console.log('success');
+                //alert(JSON.stringify(dat));
+                    // window.location.href = '/clientValidate';
+                    //         $.ajax({
+                    //             url:'/clientValidate',
+                    //             data:dat,
+                    //             success:function(data){
+                    //                 //console.log('success');
+                    //                 //alert(JSON.stringify(data));
+                    //                 //window.location.href = '/clientValidate';
+                    //             }
+                    //        })
               }
           })
        });

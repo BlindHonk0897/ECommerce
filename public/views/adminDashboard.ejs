@@ -28,48 +28,25 @@
         </script>
 
 
-<div class="container" style="margin-top: 5%; width: 70%; margin-left: 20%;">
+<div class="container" style="margin-top: 5%; width: 70%;">
         <h3 class="text-left font-weight-normal">Pending requests</h3>
         <div class="row" style="margin-top: 2%;">
             <table class="table table-condensed table-borderless">
-                <thead>
+                <thead class="thead-dark">
                     <th class="font-weight-bold" style="width: 15%;">#</th>
                     <th class="font-weight-bold" style="width: 20%;">Name</th>
-                    <th class="font-weight-bold">Email</th>
+                    <th class="font-weight-bold" style="width: 20%;">Email</th>
+                    <th></th>
+                    <th></th>
                 </thead>
-                <tr>
-                    <td>1</td>
-                    <td>Phil Bautista</td>
-                    <td>philipbautista928@gmail.com</td>
-                    <td><button class="btn btn-success btn-sm" style="margin-left: -70%; width: 65%;">Approve</button></td>
-                    <td><button class="btn btn-danger btn-sm" style="margin-left: -150%; width: 85%;">Deny</button></td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Danilo Alingasa</td>
-                    <td>daniloalingasa@gmail.com</td>
-                    <td><button class="btn btn-success btn-sm" style="margin-left: -70%; width: 65%;">Approve</button></td>
-                    <td><button class="btn btn-danger btn-sm" style="margin-left: -150%; width: 85%;">Deny</button></td>                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Winkle Mae Mariñas</td>
-                    <td>winksmariñas@gmail.com</td>
-                    <td><button class="btn btn-success btn-sm" style="margin-left: -70%; width: 65%;">Approve</button></td>
-                    <td><button class="btn btn-danger btn-sm" style="margin-left: -150%; width: 85%;">Deny</button></td>                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>Gleena Lyn Vales</td>
-                    <td>gvales123@gmail.com</td>
-                    <td><button class="btn btn-success btn-sm" style="margin-left: -70%; width: 65%;">Approve</button></td>
-                    <td><button class="btn btn-danger btn-sm" style="margin-left: -150%; width: 85%;">Deny</button></td>                </tr>
                     <% var seller = data, counter = 1; %>
                     <% seller.forEach(function(detail){%>
                         <tr>
                             <td><%= counter %></td>
                             <td><%= detail.Name %></td>
                             <td><%= detail.EmailAdd %></td>
-                            <td><button class="btn btn-success btn-sm" style="margin-left: -70%; width: 65%;" id=<%= `${detail._id}`%>>Approve</button></td>
-                            <td><button class="btn btn-danger btn-sm" style="margin-left: -150%; width: 85%;" id=<%= `${detail._id}`%>>Deny</button></td>
+                            <td><button class="btn btn-success btn-sm" style="margin-left: 107%; width: 35%;" id=<%= `${detail._id}`%>>Approve</button></td>
+                            <td><button class="btn btn-danger btn-sm" style="margin-left: 48%; width: 50%;" id=<%= `${detail._id}`%>>Deny</button></td>
                         </tr>
                         <% counter++ %>
                     <%});%>
@@ -80,7 +57,6 @@
         $(document).ready(function(){
             $butApproved = $('.btn-success');
             $butApproved.click(function(){
-               alert(this.id);
                var updated ={
                    id:this.id,
                    status:'Approved'
@@ -91,8 +67,10 @@
                    data:updated,
                    success:function(){
                        console.log('success');
+                       
                    }
                })
+               location.reload();
             });
             $butDeny = $('.btn-danger');
             $butDeny.click(function(){

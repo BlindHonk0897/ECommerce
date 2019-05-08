@@ -39,31 +39,6 @@
                 <th></th>
                 <th></th>
             </thead>
-            <tr>
-                <td>1</td>
-                <td>Phil Bautista</td>
-                <td>philipbautista928@gmail.com</td>
-                <!-- <td><button class="btn btn-success btn-sm" style="width: 55%; margin-left: 75%;">Approve</button></td> -->
-                <td><button class="btn btn-danger btn-sm" style="margin-left: 80%; width: 50%;">Block</button></td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Danilo Alingasa</td>
-                <td>daniloalingasa@gmail.com</td>
-                <!-- <td><button class="btn btn-success btn-sm" style="width: 55%; margin-left: 75%;">Approve</button></td> -->
-                <td><button class="btn btn-danger btn-sm" style="margin-left: 80%; width: 50%;">Block</button></td>
-            <tr>
-                <td>3</td>
-                <td>Winkle Mae Mariñas</td>
-                <td>winksmariñas@gmail.com</td>
-                <!-- <td><button class="btn btn-success btn-sm" style="width: 55%; margin-left: 75%;">Approve</button></td> -->
-                <td><button class="btn btn-danger btn-sm" style="margin-left: 80%; width: 50%;">Block</button></td>
-            <tr>
-                <td>4</td>
-                <td>Gleena Lyn Vales</td>
-                <td>gvales123@gmail.com</td>
-                <!-- <td><button class="btn btn-success btn-sm" style="width: 55%; margin-left: 75%;">Approve</button></td> -->
-                <td><button class="btn btn-danger btn-sm" style="margin-left: 80%; width: 50%;">Block</button></td>
             <% var seller = data, counter = 1; %>
             <% seller.forEach(function(detail){%>
                 <tr>
@@ -81,7 +56,19 @@
     $(document).ready(function(){
        $block = $('.btn-danger');
        $block.click(function(){
-           alert(this.id);
+           var toBlock ={
+                   id:this.id,
+                   status:'Approved'
+               }
+           $.ajax({
+                   method:'POST',
+                   url:'/block',
+                   data:toBlock,
+                   success:function(){
+                       console.log('success');
+                   }
+               })
+               location.reload();
        })
     });
   </script>
